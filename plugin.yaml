@@ -1,0 +1,55 @@
+name: explainer
+version: 1.0.0
+manifest_version: 2
+api_version: 1
+description: "Turn any link, PDF, notes or topic into a narrated explainer video: designed slides, a natural voice, bullets that appear as they are spoken, word-by-word highlighted captions, 16:9 or 9:16, plus SRT captions, transcript and thumbnail. Local and free."
+author: suhas-svg
+license: MIT
+homepage: https://github.com/suhas-svg/hermes_explainer
+tags: [video, explainer, tts, captions, slides, shorts, education]
+requires_hermes: ">=0.22.5"
+provides_tools:
+  - explainer_render
+  - explainer_voices
+  - explainer_videos
+provides_hooks: []
+python_dependencies:
+  - "edge-tts>=7.0,<8"
+  - "Pillow>=10.1,<14"
+config_schema:
+  voice:
+    type: str
+    default: "en-US-AndrewMultilingualNeural"
+    description: "Default narrator voice. See /explainer voices."
+  theme:
+    type: str
+    default: "midnight"
+    description: "Default colour theme: midnight, paper, ocean, sunset or forest."
+  aspect:
+    type: str
+    default: "16:9"
+    description: "Default shape: 16:9 (YouTube, slides) or 9:16 (Shorts, Reels, TikTok)."
+  max_scenes:
+    type: int
+    default: 12
+    description: "Most scenes one video may have."
+  max_chars:
+    type: int
+    default: 6000
+    description: "Most narration characters one video may have (about 6 minutes)."
+  concurrency:
+    type: int
+    default: 3
+    description: "Scenes narrated in parallel. Higher values make the voice service throttle."
+  ffmpeg_path:
+    type: str
+    default: ""
+    description: "Path to ffmpeg. Empty means find it on PATH. ffmpeg is required to encode the video."
+  font_path:
+    type: str
+    default: ""
+    description: "Optional .ttf/.otf for body text. Empty picks a system sans-serif."
+  font_bold_path:
+    type: str
+    default: ""
+    description: "Optional bold .ttf/.otf for headings and captions."
