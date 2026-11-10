@@ -104,6 +104,7 @@ Set under `plugins.entries.explainer.settings` in `config.yaml`, for example
 | `ffmpeg_path` | empty | ffmpeg to use; empty means find it on `PATH` |
 | `font_path` | empty | Body font (.ttf/.otf); empty picks a system font |
 | `font_bold_path` | empty | Heading and caption font |
+| `image_dirs` | empty | Extra folders local scene images may come from |
 
 Videos are stored in the plugin's data folder
 (`<HERMES_HOME>/plugin-data/explainer/videos/`), one folder per video.
@@ -116,10 +117,14 @@ Videos are stored in the plugin's data folder
   Don't make videos from text you are not willing to send to Microsoft. The
   voice list is fetched from the same service and cached for a week. When a
   scene's `image` is an `https://` URL, the plugin downloads it (capped at 8 MB,
-  20-second timeout); `http://` URLs are refused.
-- **Local files:** the plugin reads a scene's `image` when it is a local path,
-  plus system or configured font files. It writes only inside its own data
-  folder.
+  20-second timeout, no proxy). It refuses hosts that resolve to loopback,
+  private (RFC 1918 / ULA), link-local (including 169.254.169.254) or other
+  non-public addresses, checks the address it actually connects to, and checks
+  every redirect hop the same way; `http://` and other schemes are refused.
+- **Local files:** a scene's `image` given as a local path is read only from the
+  working directory, the plugin's data folder or the folders in `image_dirs`.
+  The plugin also reads system or configured font files, and writes only inside
+  its own data folder.
 - **Subprocesses:** ffmpeg runs locally to decode the narration and encode the
   video. `hermes explainer play` opens a video in your default player.
 

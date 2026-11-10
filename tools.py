@@ -91,6 +91,12 @@ class ExplainerTools:
     def _fonts(self) -> Fonts:
         return Fonts(str(self._get("font_path", "")), str(self._get("font_bold_path", "")))
 
+    def _image_roots(self) -> list[Path]:
+        """Folders local scene images may come from: the working directory, the plugin's data folder, image_dirs."""
+        extra = self._get("image_dirs", [])
+        extra = [extra] if isinstance(extra, str) else list(extra or [])
+        return [Path.cwd(), self._root(), *(Path(str(d)) for d in extra if str(d).strip())]
+
     # ---------- tools ----------
 
     @_guard
@@ -112,7 +118,7 @@ class ExplainerTools:
             voiced = narrate([s.narration for s in board.scenes], folder / "work" / "voice", voice=board.voice,
                              rate=board.rate, speak=self._speak, concurrency=self._int("concurrency", 3, 1, 8),
                              **self._pacing)
-            video = render(board, voiced, folder, ffmpeg=ffmpeg, fonts=self._fonts())
+            video = render(board, voiced, folder, ffmpeg=ffmpeg, fonts=self._fonts(), image_roots=self._image_roots())
         except Exception:
             shutil.rmtree(folder, ignore_errors=True)
             raise

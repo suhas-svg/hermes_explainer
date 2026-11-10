@@ -11,7 +11,8 @@ from pathlib import Path
 from typing import Optional, Sequence
 
 from . import timeline as tl
-from .slides import Fonts, Renderer, SlideError, load_image
+from .images import load_image
+from .slides import Fonts, Renderer, SlideError
 from .speech import Word
 from .storyboard import Storyboard
 
@@ -99,7 +100,7 @@ def _ffconcat(frames: Sequence[tuple[Path, float]], path: Path) -> None:
 
 
 def render(board: Storyboard, narration: Sequence[tuple[Path, list[Word]]], out_dir: Path, *, ffmpeg: str,
-           fonts: Fonts, base_dir: Optional[Path] = None, workers: int = 4) -> Video:
+           fonts: Fonts, image_roots: Sequence[Path] = (), workers: int = 4) -> Video:
     work = out_dir / "work"
     frames_dir = work / "frames"
     frames_dir.mkdir(parents=True, exist_ok=True)
@@ -126,7 +127,7 @@ def render(board: Storyboard, narration: Sequence[tuple[Path, list[Word]]], out_
         image = None
         if scene.image:
             try:
-                image = load_image(scene.image, base_dir)
+                image = load_image(scene.image, image_roots)
             except Exception as exc:  # a broken image must not sink the video
                 warnings.append(f"Scene {n}: image skipped ({exc}).")
         bases = renderer.scene_bases(scene, n, len(board.scenes), image)

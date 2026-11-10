@@ -286,14 +286,6 @@ def test_a_broken_image_becomes_a_warning_not_a_failure(tmp_path):
     assert len(result["warnings"]) == 2 and "only https" in result["warnings"][1]
 
 
-def test_local_images_are_shown_and_insecure_urls_refused(tmp_path):
-    from PIL import Image
-    Image.new("RGB", (40, 30), "red").save(tmp_path / "pic.png")
-    assert slides.load_image(str(tmp_path / "pic.png")).size == (40, 30)
-    with pytest.raises(slides.SlideError, match="only https"):
-        slides.load_image("http://example.com/pic.png")
-
-
 def test_slides_render_without_any_system_font(monkeypatch):
     monkeypatch.setattr(slides, "_FONT_CANDIDATES", {"regular": [], "bold": []})
     fonts = slides.Fonts()

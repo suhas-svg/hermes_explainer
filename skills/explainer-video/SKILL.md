@@ -38,7 +38,10 @@ a source.
 - **note:** the source for that scene ("Source: Nature, 2024") when facts come from
   one.
 - **image:** only an https URL or local path you have actually seen (a figure from
-  the paper, a diagram from the page). Never invent image URLs.
+  the paper, a diagram from the page). Never invent image URLs. Local files must
+  be in the working directory, the plugin's data folder or a configured
+  `image_dirs` folder; download a figure into the working directory first if
+  needed. An image that cannot be used is skipped with a warning.
 - **aspect:** `9:16` when the user says short, reel, TikTok, vertical or phone;
   otherwise `16:9`. Pick a `theme` that suits the subject (paper for academic,
   ocean or forest for science and nature, sunset for culture, midnight default).

@@ -1,5 +1,5 @@
 name: explainer
-version: 1.0.0
+version: 1.0.1
 manifest_version: 2
 api_version: 1
 description: "Turn any link, PDF, notes or topic into a narrated explainer video: designed slides, a natural voice, bullets that appear as they are spoken, word-by-word highlighted captions, 16:9 or 9:16, plus SRT captions, transcript and thumbnail. Local and free."
@@ -53,3 +53,7 @@ config_schema:
     type: str
     default: ""
     description: "Optional bold .ttf/.otf for headings and captions."
+  image_dirs:
+    type: list
+    default: []
+    description: "Extra folders local scene images may be read from. The working directory and the plugin's data folder are always allowed."

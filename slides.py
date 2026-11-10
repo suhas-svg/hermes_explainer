@@ -2,17 +2,12 @@
 
 from __future__ import annotations
 
-import io
-import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Sequence
 
 from .storyboard import Scene, Storyboard
 from .timeline import FrameState, Token
-
-MAX_IMAGE_BYTES = 8 * 1024 * 1024
-
 
 class SlideError(RuntimeError):
     pass
@@ -104,29 +99,6 @@ def wrap(text: str, font, width: int) -> list[str]:
     if line:
         lines.append(line)
     return lines
-
-
-def load_image(source: str, base_dir: Optional[Path] = None):
-    """Open a local image path or an https URL (size-capped), EXIF-rotated, as RGB."""
-    Image, _, _, ImageOps = _pil()
-    if source.lower().startswith("https://"):
-        request = urllib.request.Request(source, headers={"User-Agent": "Hermes-Explainer-Studio/1.0"})
-        with urllib.request.urlopen(request, timeout=20) as response:  # noqa: S310 - https only, size-capped
-            data = response.read(MAX_IMAGE_BYTES + 1)
-        if len(data) > MAX_IMAGE_BYTES:
-            raise SlideError(f"image larger than {MAX_IMAGE_BYTES // (1024 * 1024)} MB")
-        image = Image.open(io.BytesIO(data))
-    elif source.lower().startswith("http://"):
-        raise SlideError("only https:// image URLs are allowed")
-    else:
-        path = Path(source).expanduser()
-        if not path.is_absolute() and base_dir:
-            path = base_dir / path
-        if not path.is_file():
-            raise SlideError(f"image not found: {path}")
-        image = Image.open(path)
-    image.load()
-    return ImageOps.exif_transpose(image).convert("RGB")
 
 
 class Renderer:
